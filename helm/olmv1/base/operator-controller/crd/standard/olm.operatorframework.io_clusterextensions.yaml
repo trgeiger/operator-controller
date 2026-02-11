@@ -171,6 +171,7 @@ spec:
                   that are required to manage the extension.
                   The ServiceAccount must be configured with the necessary permissions to perform these interactions.
                   The ServiceAccount must exist in the namespace referenced in the spec.
+
                   The serviceAccount field is required.
                 properties:
                   name:
@@ -209,6 +210,10 @@ spec:
                 required:
                 - name
                 type: object
+                x-kubernetes-validations:
+                - message: serviceAccount.name must be non-empty when serviceAccount
+                    is specified
+                  rule: self.name != ''
               source:
                 description: |-
                   source is required and selects the installation source of content for this ClusterExtension.

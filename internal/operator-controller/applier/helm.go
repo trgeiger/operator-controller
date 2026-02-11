@@ -406,6 +406,15 @@ func formatPreAuthorizerOutput(missingRules []authorization.ScopedPolicyRules, a
 }
 
 func getUserInfo(ext *ocv1.ClusterExtension) user.Info {
+	// If SyntheticPermissions feature gate is enabled and ServiceAccount name is empty, 
+	// use synthetic identity (experimental channel behavior)
+	if features.OperatorControllerFeatureGate.Enabled(features.SyntheticPermissions) && ext.Spec.ServiceAccount.Name == "" {
+		return &user.DefaultInfo{
+			Name:   fmt.Sprintf("olm:clusterextension:%s", ext.Name),
+			Groups: []string{"olm:clusterextensions"},
+		}
+	}
+	// Otherwise, use the traditional ServiceAccount-based identity
 	return &user.DefaultInfo{Name: fmt.Sprintf("system:serviceaccount:%s:%s", ext.Spec.Namespace, ext.Spec.ServiceAccount.Name)}
 }
 

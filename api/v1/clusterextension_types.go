@@ -70,10 +70,18 @@ type ClusterExtensionSpec struct {
 	// that are required to manage the extension.
 	// The ServiceAccount must be configured with the necessary permissions to perform these interactions.
 	// The ServiceAccount must exist in the namespace referenced in the spec.
+	// <opcon:experimental:description>
+	// On the experimental channel, the serviceAccount field is optional. When specified, OLM uses the provided ServiceAccount.
+	// When unspecified, OLM uses Kubernetes impersonation to create a synthetic identity with:
+	//   - User: olm:clusterextension:<clusterExtensionName>
+	//   - Group: olm:clusterextensions
+	// </opcon:experimental:description>
 	// The serviceAccount field is required.
 	//
+	// <opcon:experimental:validation:Optional>
 	// +required
-	ServiceAccount ServiceAccountReference `json:"serviceAccount"`
+	// +kubebuilder:validation:XValidation:rule="self.name != ''",message="serviceAccount.name must be non-empty when serviceAccount is specified"
+	ServiceAccount ServiceAccountReference `json:"serviceAccount,omitempty"`
 
 	// source is required and selects the installation source of content for this ClusterExtension.
 	// Set the sourceType field to perform the selection.

@@ -16,6 +16,7 @@ options:
       enabled:
         - PreflightPermissions
         - HelmChartSupport
+        - SyntheticPermissions
       disabled:
         - WebhookProviderOpenshiftServiceCA
   catalogd:
